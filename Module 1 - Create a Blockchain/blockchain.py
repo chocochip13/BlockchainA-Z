@@ -16,7 +16,7 @@ class Blockchain:
     
     def __init__(self):
         self.chain = []
-        self.create_block(proof=1, previous_hash='0')  # Can choose arbitrary values for proof and previous_hash,stick to common practice values
+        self.create_block(proof=1, previous_hash='0')  # Can choose any values for proof and prev_hash,stick to common practice value
         
     def create_block(self, proof, previous_hash):
         block = {'index': len(self.chain) + 1,
@@ -63,7 +63,7 @@ class Blockchain:
             previous_block = block
             block_index += 1
             
-            return True
+        return True
         
 # Part 2
 
@@ -93,3 +93,22 @@ def mine_block():
                 'previous_hash': block['previous_hash']}
     
     return jsonify(response), 200
+
+# Getting a full Blockchain
+@app.route('/get_chain', methods=['GET'])
+def get_chain():
+    response = {'chain': blockchain.chain,
+                'length': len(blockchain.chain)}
+    return jsonify(response), 200
+
+@app.route('/is_valid', methods = ['GET'])
+def is_valid():
+    is_valid = blockchain.is_chain_valid(blockchain.chain)
+    if is_valid:
+        response = {'message' : 'All good, the blockchain is valid.'}
+    else:
+        response = {'message' : 'Honey, we got a problem. The blockchain is not valid.'}
+    return jsonify(response), 200
+
+
+app.run(host = '0.0.0.0', port = '5000')
